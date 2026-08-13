@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Berke Tan Muhtar: Game Review for Chess.com</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+
+  :root {
+    --bg: #1c1a17;
+    --bg-raised: #24211d;
+    --bg-card: #2b2723;
+    --ink: #ece7de;
+    --ink-dim: #a89e8f;
+    --ink-faint: #6f6659;
+    --accent: #7fa650;
+    --accent-text: #a3c47c;
+    --brilliant: #2d8577;
+    --best: #7fa650;
+    --excellent: #9cb377;
+    --good: #8a8f5c;
+    --book: #b8925a;
+    --inaccuracy: #d4a24c;
+    --miss: #c1633a;
+    --blunder: #8f2f34;
+    --border: #3a352e;
+    --serif: 'Fraunces', Georgia, serif;
+    --sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --mono: 'IBM Plex Mono', 'SF Mono', Consolas, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3 { font-family: var(--serif); font-weight: 600; margin: 0; }
+  p { margin: 0 0 14px; color: var(--ink); }
+  p:last-child { margin-bottom: 0; }
+  ul { margin: 0; padding-left: 20px; }
+  li { margin-bottom: 10px; }
+  li:last-child { margin-bottom: 0; }
+  a { color: var(--accent-text); }
+
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 24px; }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent-text);
+  }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    padding: 72px 0 48px;
+    background-image:
+      linear-gradient(160deg, rgba(127,166,80,0.08), transparent 55%),
+      repeating-conic-gradient(rgba(236,231,222,0.035) 0% 25%, transparent 0% 50%);
+    background-size: auto, 48px 48px;
+    border-bottom: 1px solid var(--border);
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards;
+  }
+  .hero h1 {
+    font-size: clamp(32px, 6vw, 52px);
+    margin: 14px 0 10px;
+    letter-spacing: -0.01em;
+  }
+  .matchup {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--ink-dim);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+  }
+  .matchup .side { display: flex; align-items: center; gap: 6px; }
+  .matchup .piece { font-size: 16px; }
+  .matchup .rating { color: var(--accent-text); }
+  .matchup .vs { color: var(--ink-faint); }
+  .tagline {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(18px, 2.6vw, 22px);
+    color: var(--ink-dim);
+    max-width: 46ch;
+  }
+
+  /* ---------- STATS ---------- */
+  .stats {
+    display: flex;
+    gap: 16px;
+    padding: 28px 0 8px;
+    flex-wrap: wrap;
+  }
+  .stat {
+    background: var(--ink);
+    color: var(--bg);
+    border-radius: 10px;
+    padding: 16px 22px;
+    min-width: 150px;
+    flex: 1 1 150px;
+  }
+  .stat .num {
+    font-family: var(--mono);
+    font-weight: 600;
+    font-size: 34px;
+    line-height: 1;
+  }
+  .stat .label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #55503f;
+    margin-top: 6px;
+  }
+
+  /* ---------- SECTION SHELL ---------- */
+  section { padding: 56px 0; border-bottom: 1px solid var(--border); }
+  section:last-of-type { border-bottom: none; }
+  .section-head { margin-bottom: 26px; }
+  .section-head h2 {
+    font-size: 22px;
+    margin-top: 6px;
+  }
+  .section-sub {
+    color: var(--ink-dim);
+    font-size: 15px;
+    margin-top: 8px;
+    max-width: 55ch;
+  }
+
+  /* ---------- MOVE REVIEW ---------- */
+  .review-list { border-top: 1px solid var(--border); }
+  .move { border-bottom: 1px solid var(--border); }
+  .move-row {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 4px;
+    background: none;
+    border: none;
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    text-align: left;
+    cursor: default;
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  .move.revealed .move-row { animation: fadeUp 0.5s ease forwards; }
+  .move[data-has-detail="true"] .move-row { cursor: pointer; }
+  .move[data-has-detail="true"] .move-row:hover { background: rgba(236,231,222,0.03); }
+  .move-row:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+  }
+  .move-icon {
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .move-label { font-weight: 500; flex: 1; }
+  .move-count {
+    font-family: var(--mono);
+    font-size: 15px;
+    color: var(--ink-dim);
+    min-width: 20px;
+    text-align: right;
+  }
+  .move-chevron {
+    color: var(--ink-faint);
+    font-size: 13px;
+    transition: transform 0.3s ease;
+    width: 14px;
+  }
+  .move.expanded .move-chevron { transform: rotate(180deg); }
+  .move-detail {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+  }
+  .move-detail-inner {
+    padding: 2px 4px 22px 46px;
+    color: var(--ink-dim);
+    font-size: 15px;
+    max-width: 62ch;
+  }
+  .move.expanded .move-detail { max-height: 520px; }
+
+  .t-brilliant { background: var(--brilliant); color: #eafff9; }
+  .t-best { background: var(--best); color: #17240e; }
+  .t-excellent { background: var(--excellent); color: #17240e; }
+  .t-good { background: var(--good); color: #eef0e2; }
+  .t-book { background: var(--book); color: #241b0e; }
+  .t-inaccuracy { background: var(--inaccuracy); color: #241b0e; }
+  .t-miss { background: var(--miss); color: #fbe9e0; }
+  .t-blunder { background: var(--blunder); color: #fbe4e5; }
+
+  /* ---------- ARC ---------- */
+  .arc-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+  .arc-card {
+    background: var(--bg-raised);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 22px 20px;
+  }
+  .arc-num {
+    font-family: var(--mono);
+    color: var(--accent-text);
+    font-size: 13px;
+    margin-bottom: 10px;
+  }
+  .arc-card h3 {
+    font-size: 17px;
+    margin-bottom: 10px;
+  }
+  .arc-card p { font-size: 14.5px; color: var(--ink-dim); }
+
+  /* ---------- SCOUTING ---------- */
+  .scouting-note {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--ink-faint);
+    margin-bottom: 24px;
+  }
+  .scouting p {
+    font-size: 15.5px;
+    color: var(--ink-dim);
+    margin-bottom: 20px;
+    max-width: 64ch;
+  }
+  .scouting p strong { color: var(--ink); font-weight: 500; }
+
+  /* ---------- BOARD ---------- */
+  .board-block {
+    border-left: 3px solid var(--accent);
+    padding: 4px 0 4px 22px;
+  }
+  .board-block p {
+    font-family: var(--serif);
+    font-size: clamp(17px, 2.4vw, 20px);
+    font-style: italic;
+    color: var(--ink);
+    max-width: 58ch;
+  }
+
+  /* ---------- CLOSING ---------- */
+  .closing { padding-bottom: 80px; }
+  .closing p {
+    font-size: 16px;
+    color: var(--ink-dim);
+    max-width: 58ch;
+  }
+  .closing .pitch { color: var(--ink); font-size: 17px; margin-bottom: 18px; }
+  .tz-line {
+    font-family: var(--mono);
+    font-size: 13.5px;
+    color: var(--accent-text);
+    margin: 22px 0;
+  }
+  .contact {
+    margin-top: 28px;
+    padding-top: 22px;
+    border-top: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--ink-dim);
+  }
+  .contact .name { color: var(--ink); font-family: var(--sans); font-weight: 600; font-size: 16px; display: block; margin-bottom: 8px; }
+  .footnote {
+    margin-top: 40px;
+    font-size: 12.5px;
+    color: var(--ink-faint);
+    font-style: italic;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 680px) {
+    .arc-grid { grid-template-columns: 1fr; }
+    .stat { min-width: 130px; }
+    .hero { padding: 52px 0 36px; }
+    section { padding: 44px 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, .hero, .move.revealed .move-row {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+  <header class="hero">
+    <div class="wrap">
+      <div class="eyebrow">Game Review</div>
+      <h1>Berke Tan Muhtar</h1>
+      <div class="matchup">
+        <span class="side"><span class="piece">♔</span> Berke Tan Muhtar <span class="rating">(1700)</span></span>
+        <span class="vs">vs.</span>
+        <span class="side"><span class="piece">♚</span> Chess.com <span class="rating">(Senior PM req.)</span></span>
+      </div>
+      <p class="tagline">Twenty-one years on this board. I'd like the next move.</p>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="stats">
+      <div class="stat"><div class="num" id="statRating">0</div><div class="label">Rating · Chess.com</div></div>
+      <div class="stat"><div class="num" id="statYears">0</div><div class="label">Years on the board</div></div>
+    </div>
+
+    <section id="review">
+      <div class="section-head">
+        <div class="eyebrow">Move Review</div>
+        <h2>Every product decision on the résumé, scored the way Chess.com scores mine.</h2>
+        <p class="section-sub">Tap a row to open it.</p>
+      </div>
+      <div class="review-list" id="reviewList"></div>
+    </section>
+
+    <section id="arc">
+      <div class="section-head">
+        <div class="eyebrow">The Game So Far</div>
+        <h2>Opening, middlegame, endgame.</h2>
+      </div>
+      <div class="arc-grid">
+        <div class="arc-card">
+          <div class="arc-num">1. Opening</div>
+          <h3>The setup</h3>
+          <p>Data Analyst at Plan4co, Technical Sales Analyst at Timeflow, a Management Engineering degree, graduate coursework in Data Science. None of it looks like product management on paper. All of it was learning to read a position before touching a piece: patterns in data, in customer behavior, in what actually drives a decision.</p>
+        </div>
+        <div class="arc-card">
+          <div class="arc-num">2. Middlegame</div>
+          <h3>Where the real game is</h3>
+          <p>IT Project Manager at Capgemini is where tracking turned into defining: the real-time integration, the completeness checks, the automated change-summary. By Product Manager, Customer Success at ROAR CX, I was doing the job before I had the title: owning an AI chatbot end to end, leading a market activation start to finish. The title is three months old. The instinct isn't.</p>
+        </div>
+        <div class="arc-card">
+          <div class="arc-num">3. Endgame</div>
+          <h3>The promotion square</h3>
+          <p>Pawns don't choose when they promote. They can choose which square they're reaching for. Mine is a role where 21 years of reading this specific board and several years of turning data into decisions finally point at the same target.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="scouting">
+      <div class="section-head">
+        <div class="eyebrow">Scouting Report</div>
+        <h2>Product taste, in the chess context. Not just claimed.</h2>
+      </div>
+      <p><strong>Online and over-the-board aren't the same product wearing different skins.</strong> A misclick online costs you a piece; a shaking hand across a real board in a real tournament costs you something else entirely. That difference is a big part of why Chess.com's growth model works: you can play a thousand games and enter a hundred tournaments without one of them touching your official FIDE rating, and for a huge number of players, especially anyone who plays better unwatched, that's not a compromise. It's the whole appeal. The product isn't just chess. It's chess with the pressure engineered out until you ask for it back.</p>
+      <p><strong>A beginner and an upper-intermediate player aren't using the same Chess.com, even on the same page.</strong> Beginners have more to engage with (more lessons, more guided content, more reasons to open the app), and that's a real driver of overall engagement, not a side effect. It's also why Chess.com ratings and FIDE ratings for the same player rarely match: more games played, nobody watching, being at home instead of across from a stranger. All of it changes how a player performs, not just how they feel about it.</p>
+      <p><strong>One more pattern worth having an opinion on:</strong> strong players online mostly avoid classical time controls: too few opponents at that level, and nobody wants to stare at a screen for three hours for one game. They live in blitz and bullet instead. It's the same reason streamers play bullet almost exclusively: a thirty-minute think is a content killer, and viewers want the next move now. Not a criticism. A real constraint on how any feature aimed at "serious" players actually gets used, worth designing around rather than assuming away.</p>
+    </section>
+
+    <section id="board">
+      <div class="section-head">
+        <div class="eyebrow">My Board</div>
+      </div>
+      <div class="board-block">
+        <p>Started at six. Twenty-one years later: online daily, over the board once a week with a real club here in Turin, rated around 1700. Not a titled player. Not trying to sound like one. Just someone who's spent more hours than is probably reasonable thinking about why some positions feel obvious and others don't: exactly what "product taste, especially in the chess context" is supposed to mean.</p>
+      </div>
+    </section>
+
+    <section class="closing">
+      <p class="pitch">I won't pretend this résumé reads like seven years of Senior PM experience. It doesn't. But I've been studying this exact board for 21 years, and I think that's worth a conversation.</p>
+      <p class="tz-line">Significant overlap with US Eastern and Pacific hours works for me.</p>
+      <div class="contact">
+        <span class="name">Berke Tan Muhtar</span>
+        berketan99@gmail.com · +39 349 648 5005 · linkedin.com/in/berketanmuhtar · Turin, Italy
+      </div>
+      <p class="footnote">Built by the candidate, not Chess.com, but with a lot of respect for the product.</p>
+    </section>
+  </div>
+
+<script>
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const moves = [
+    {
+      tier: 'Brilliant', key: 'brilliant', count: 1, symbol: '‼',
+      detail: `Batch syncs from ServiceNow were leaving Capgemini's release-management platform showing stale data: teams misaligned, time lost, nobody quite sure why. Diagnosed it, then defined and drove the shift to real-time integration: reporting lag went from 2–3 hours to near real-time, and release-coordination errors dropped hard. Nobody asked for this fix by name. That's what makes it brilliant instead of best.`
+    },
+    {
+      tier: 'Best', key: 'best', count: 3, symbol: '★',
+      detail: `<ul>
+        <li>Replaced a manual, hourly check of factories and dependencies with an automated daily change-summary at Capgemini, eliminating 4–6 hours of manual monitoring every week.</li>
+        <li>Own an internal AI chatbot end-to-end at ROAR CX: core logic, JSON structuring for bot behavior, RAG knowledge files built from real client requirements.</li>
+        <li>Placed 22nd of 10,000+ applicants (roughly the top 0.2%) in Bending Spoons' product management competition, building a full product roadmap from concept to launch against a notoriously tough bar.</li>
+      </ul>`
+    },
+    {
+      tier: 'Excellent', key: 'excellent', count: 3, symbol: '✓',
+      detail: `<ul>
+        <li>Turned an open strategic question at Plan4co into a data-backed go/no-go recommendation the client actually used.</li>
+        <li>Led new-market activation for a client expanding into a new channel type: requirements, rollout, coordination with engineering, start to finish.</li>
+        <li>Competed in L'Oréal's Brandstorm, an international 3-person case competition: designed a personalization- and exclusivity-driven engagement concept for a metaverse brand experience against thousands of teams worldwide.</li>
+      </ul>`
+    },
+    {
+      tier: 'Good', key: 'good', count: 1, symbol: '✓',
+      detail: `Read data across product inspections, customer behavior, sales, and campaigns at Timeflow, and turned it into commercial decisions that moved engagement and satisfaction, not a report nobody opened.`
+    },
+    {
+      tier: 'Book', key: 'book', count: 1, symbol: '▤',
+      detail: `B.Sc. Management Engineering, Politecnico di Torino, plus graduate coursework in Data Science: statistical methods, data visualization, decision-making under uncertainty. Opening theory, not just a credential.`
+    },
+    {
+      tier: 'Inaccuracy', key: 'inaccuracy', count: 1, symbol: '?!',
+      detail: `Early on, I played every problem like a classical game: calculating every field, every edge case, before I'd trust a decision. It took a couple of years to build the pattern-recognition to move like a blitz player instead: trusting a read before the analysis finishes. I'd rather own that than pretend I started fast.`
+    },
+    { tier: 'Miss', key: 'miss', count: 0, symbol: '✕', detail: null },
+    { tier: 'Blunder', key: 'blunder', count: 0, symbol: '✕✕', detail: null },
+  ];
+
+  const list = document.getElementById('reviewList');
+
+  moves.forEach((m, i) => {
+    const hasDetail = !!m.detail;
+    const el = document.createElement('div');
+    el.className = 'move';
+    el.dataset.hasDetail = hasDetail ? 'true' : 'false';
+
+    el.innerHTML = `
+      <button class="move-row" ${hasDetail ? 'aria-expanded="false"' : 'tabindex="-1"'}>
+        <span class="move-icon t-${m.key}">${m.symbol}</span>
+        <span class="move-label">${m.tier}</span>
+        <span class="move-count">${m.count}</span>
+        ${hasDetail ? '<span class="move-chevron">⌄</span>' : '<span style="width:14px"></span>'}
+      </button>
+      ${hasDetail ? `<div class="move-detail"><div class="move-detail-inner">${m.detail}</div></div>` : ''}
+    `;
+
+    if (hasDetail) {
+      const btn = el.querySelector('.move-row');
+      btn.addEventListener('click', () => {
+        const expanded = el.classList.toggle('expanded');
+        btn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+      });
+    }
+
+    list.appendChild(el);
+
+    const delay = reduceMotion ? 0 : 550 + i * 110;
+    setTimeout(() => el.classList.add('revealed'), delay);
+  });
+
+  function countUp(el, target, duration) {
+    if (reduceMotion) { el.textContent = target; return; }
+    const start = performance.now();
+    function tick(now) {
+      const p = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(eased * target);
+      if (p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  setTimeout(() => {
+    countUp(document.getElementById('statRating'), 1700, 1100);
+    countUp(document.getElementById('statYears'), 21, 1100);
+  }, 250);
+</script>
+
+</body>
+</html>
